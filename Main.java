@@ -1,3 +1,5 @@
+import com.sun.jdi.connect.Connector;
+
 import java.util.Scanner;
 
 public class Main {
@@ -6,6 +8,13 @@ public class Main {
 
 
     public static void main(String[] args) {
+//        System.out.println("Before delete");
+//        addTOdoList("Membaca");
+//        addTOdoList("Menulis");
+//        addTOdoList("Menggambar");
+//        showTodoList();
+//        removeTodoList(2);
+//        System.out.println("After delete");
         showMainMenu();
     }
 
@@ -19,11 +28,11 @@ public class Main {
         }
     }
 
-    public static void addTOdoList (String todo) {
+    public static void addTOdoList(String todo) {
         resizeArrayIfFull();
 
 
-        for (int i =  0; i <todos.length; i++) {
+        for (int i = 0; i < todos.length; i++) {
             if (todos[i] == null) {
                 todos[i] = todo;
                 break;
@@ -58,14 +67,14 @@ public class Main {
         }
         return isFull;
     }
+
     public static boolean removeTodoList(Integer number) {
         if (isSelectedTodoNotValid(number)) return false;
+
         for (int i = number - 1; i < todos.length; i++) {
-            // if todo is the last element
             if (i == (todos.length - 1)) {
                 todos[i] = null;
             } else {
-                //replace with the the element on the right
                 todos[i] = todos[i + 1];
             }
         }
@@ -76,14 +85,17 @@ public class Main {
         if (number <= 0) {
             return true;
         }
+
         if (number - 1 > todos.length - 1) {
             return true;
         }
-        if (todos [number - 1] == null) {
+
+        if (todos[number - 1] == null) {
             return true;
         }
         return false;
     }
+
     public static boolean editTodoList(Integer number, String newTodo) {
         if (isSelectedTodoNotValid(number)) {
             return false;
@@ -91,40 +103,83 @@ public class Main {
         todos[number - 1] = newTodo;
         return true;
     }
-    public static void showMainMenu() {
-        boolean isRunnung = true;
-        while (isRunnung) {
+
+    public static void showMainMenu(){
+        boolean isRunning = true;
+        while (isRunning){
             showTodoList();
-            System.out.println("MENU : ");
-            System.out.println("1. Tambah");
-            System.out.println("2. Hapus");
-            System.out.println("3. Edit");
-            System.out.println("4. Keluar");
-            System.out.println("Pilih : ");
-            String selectedMenu = scanner.nextLine();
-            switch (selectedMenu) {
+            System.out.println("Menu: ");
+            System.out.println("1. Tambah ");
+            System.out.println("2. Hapus ");
+            System.out.println("3. Edit ");
+            System.out.println("4. Keluar ");
+            String selectedMenu = input("pilih");
+            switch (selectedMenu){
                 case "1":
-                    // showMenuAddTodoList();
+                    showMenuAddTodoList();
                     System.out.println("Menu add todo list");
                     break;
-
                 case "2":
-                    //showMenuRemoveTodoList();
+                    showMenuRemoveTodoList();
                     System.out.println("Menu remove todo list");
                     break;
-
                 case "3":
-                    //showMenuEditTodoList();
+                    //ShowMenuEditTodoList
                     System.out.println("Menu edit todo list");
                     break;
-
                 case "4":
-                    isRunnung = false;
+                    isRunning = false;
                     break;
-
                 default:
                     System.out.println("Pilih menu dengan benar");
             }
+        }
+    }
+
+    public static String input(String info){
+        System.out.println(info + " : ");
+        String data = scanner.nextLine();
+        return data;
+    }
+
+    public static void showMenuAddTodoList() {
+        System.out.println("MENAMBAH TODO LIST");
+        String todo = input("Todo (x jika batal)");
+        if (todo.equals("x")){
+            //batal
+        } else {
+            addTOdoList(todo);
+        }
+    }
+
+    public static void showMenuRemoveTodoList(){
+        System.out.println("MENGHAPUS TODO LIST");
+        String todoYangDipilih = input("Nomor todo yang dihapus (x jika batal)");
+        if (todoYangDipilih.equals("x")) {
+            //batal
+        } else {
+            boolean success = removeTodoList(Integer.valueOf(todoYangDipilih));
+            if (!success) {
+                System.out.println("Gagal menghapus todo list: " + todoYangDipilih);
+            }
+        }
+    }
+
+    public static void showMenuEditTodoList(){
+        System.out.println("MENGEDIT TODO LIST");
+        String selectedTodo = input("Masukkan nomor todo (x jika batal)");
+        if (selectedTodo.equals("x")){
+            return;
+        }
+        String newTodo = input("Masukkan todo yang baru (x jika batal)");
+        if (newTodo.equals("x")){
+            return;
+        }
+        boolean isEditTodoSuccess = editTodoList(Integer.valueOf(selectedTodo), newTodo);
+        if (isEditTodoSuccess){
+            System.out.println("Berhasil mengedit todo");
+        } else {
+            System.out.println("Gagal mengedit todo");
         }
     }
 }
